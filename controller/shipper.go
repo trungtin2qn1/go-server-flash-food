@@ -10,7 +10,7 @@ import (
 //GetShipperByID ...
 func GetShipperByID(c *gin.Context) {
 	//token := c.Request.Header.Get("token")
-	temp := c.Param("shipper_id")
+	temp := c.Query("shipper_id")
 	if temp == "" {
 		c.JSON(403, gin.H{
 			"message": "Data or data type is invalid",

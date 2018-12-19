@@ -11,7 +11,7 @@ import (
 //GetOrderInfoByID ...
 func GetOrderInfoByID(c *gin.Context) {
 	//token := c.Request.Header.Get("token")
-	temp := c.Param("order_id")
+	temp := c.Query("order_id")
 	if temp == "" {
 		c.JSON(403, gin.H{
 			"message": "Data or data type is invalid",
