@@ -10,8 +10,11 @@ import (
 //InitRouter App Handler Start From Here
 func InitRouter() {
 
+	//gin.SetMode(gin.ReleaseMode)
+
 	router := gin.Default()
 
+	router.GET("/order_detail/order_id", controller.GetAllOrderDetail)
 	router.GET("/order/all", controller.GetAllFreeOrder)
 	router.GET("/store", controller.GetStoreInfoByID)
 	router.PUT("/shipper", controller.UpdateShipper)

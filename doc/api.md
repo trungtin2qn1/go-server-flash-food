@@ -4,12 +4,14 @@ API doc:
         URL: /order/all
         Methods: Get
         Output:[{
+            "order_id": 1,
             "from": "770 Sư Vạn Hạnh10HCM",
             "to": "61/1, Xô Viết Nghệ Tĩnh, quận Bình Thạnh",
             "cutomer_name": "Nguyễn Thu An",
             "store_name": "Toco Toco Bubble Tea"
         },
         {
+            "order_id": 2,
             "from": "770 Sư Vạn Hạnh10HCM",
             "to": "652 Huỳnh Tấn Phát, quận 7",
             "cutomer_name": "Trần Quốc Vương",

@@ -8,6 +8,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetAllOrderDetail(c *gin.Context) {
+	temp := c.Query("order_id")
+	fmt.Println(temp)
+	if temp == "" {
+		c.JSON(403, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+	orderID, e := util.ConvertStringToInt(temp)
+	if e != nil {
+		c.JSON(503, gin.H{
+			"message": "Server is busy",
+		})
+		return
+	}
+	orderDetails, err := model.GetOrderDetailsByOrderID(orderID)
+	if err != nil && len(orderDetails) != 0 {
+		c.JSON(503, gin.H{
+			"message": "Can't get order details from database",
+		})
+		return
+	}
+	if len(orderDetails) == 0 {
+		c.JSON(406, gin.H{
+			"message": "This order is not available in database",
+		})
+		return
+	}
+	c.JSON(200, orderDetails)
+}
+
 //GetOrderDetailByID ...
 func GetOrderDetailByID(c *gin.Context) {
 	//token := c.Request.Header.Get("token")
@@ -59,6 +91,7 @@ func CreateOrderDetail(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Println(orderDetail)
 	newOrderDetail, err := model.CreateOrderDetail(orderDetail.CustomerID, orderDetail.Price, orderDetail.OrderID, orderDetail.Status, orderDetail.ProductID, orderDetail.Amount, orderDetail.Date)
 	if err != nil {
 		c.JSON(503, gin.H{

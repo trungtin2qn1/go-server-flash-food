@@ -13,7 +13,7 @@ type OrderDetail struct {
 	Price      string `json:"price, omitempty" gorm:"text"`
 	Status     int    `json:"status, omitempty" gorm:"tinyint(1)"`
 	Amount     int    `json:"amount, omitempty" gorm:"column:amount"`
-	Date       string `json:"date, omitempty" gorm:"datetime"`
+	Date       string `json:"date, omitempty" gorm:"datetime;default:null"`
 }
 
 //GetOrderDetailsByOrderID ...

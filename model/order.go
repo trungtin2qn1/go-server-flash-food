@@ -8,8 +8,8 @@ import (
 type Order struct {
 	ID              int    `json:"id"`
 	CustomerID      int    `json:"customer_id, omitempty" gorm:"column:customerId"`
-	ShipperID       int    `json:"shipper_id, omitempty" gorm:"column:shipperId"`
-	Date            string `json:"date, omitempty" gorm:"datetime"`
+	ShipperID       int    `json:"shipper_id, omitempty" gorm:"column:shipperId;default:null"`
+	Date            string `json:"date, omitempty" gorm:"datetime;default:null"`
 	Status          int    `json:"status, omitempty" gorm:"tinyint(1)"`
 	SumPrice        string `json:"sum_price, omitempty" gorm:"text"`
 	AddressCustomer string `json:"address_customer, omitempty" gorm:"text"`

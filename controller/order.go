@@ -18,14 +18,16 @@ func GetAllFreeOrder(c *gin.Context) {
 		return
 	}
 	type FreeOrder struct {
+		OrderID      int    `json:"order_id, omitempty"`
 		From         string `json:"from, omitempty"`
 		To           string `json:"to, omitempty"`
-		CustomerName string `json:"cutomer_name"`
-		StoreName    string `json:"store_name"`
+		CustomerName string `json:"cutomer_name, omitempty"`
+		StoreName    string `json:"store_name, omitempty"`
 	}
 	var freeOrders []FreeOrder
 	for i := 0; i < len(orders); i++ {
 		var freeOrder FreeOrder
+		freeOrder.OrderID = orders[i].ID
 		store, err := model.GetStoreInfoByID(orders[i].StoreID)
 		if err != nil && store.ID != 0 {
 			c.JSON(503, gin.H{
