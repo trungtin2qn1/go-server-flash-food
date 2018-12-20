@@ -10,12 +10,12 @@ type Customer struct {
 	Name     string `json:"name, omitempty" gorm:"text"`
 	Avatar   string `json:"avatar, omitempty" gorm:"text"`
 	Email    string `json:"email, omitempty" gorm:"unique"`
-	Password string `json:"password, omitempty" gorm:"text"`
+	Password string `json:"-" gorm:"-"`
 	Token    string `json:"token, omitempty" gorm:"text"`
 }
 
 //GetCustomerInfoByID ...
-func GetCustomerInfoByID(customerID string) (Customer, error) {
+func GetCustomerInfoByID(customerID int) (Customer, error) {
 	var customerInfo Customer
 	db := database.GetDB()
 	res := db.Where("id = ?", customerID).Find(&customerInfo)

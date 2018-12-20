@@ -2,47 +2,30 @@ package model
 
 import (
 	"flash-food/database"
-	"flash-food/util"
-	"time"
 )
-
-type OrderTemp struct {
-	ID              string    `json:"id"`
-	CustomerID      string    `json:"customer_id, omitempty" gorm:"column:customerId"`
-	ShipperID       string    `json:"shipper_id, omitempty" gorm:"column:shipperId"`
-	Date            time.Time `json:"date, omitempty" gorm:"datetime"`
-	Status          string    `json:"status, omitempty" gorm:"tinyint(1)"`
-	SumPrice        string    `json:"sum_price, omitempty" gorm:"text"`
-	AddressCustomer string    `json:"address_customer, omitempty" gorm:"text"`
-	Phone           string    `json:"phone, omitempty" gorm:"text"`
-	StoreID         string    `json:"store_id, omitempty" gorm:"column:storeId"`
-}
-
-func (order *Order) convertJSONToOrder() OrderTemp {
-	var orderTemp OrderTemp
-	orderTemp.ID = util.ConvertIntToString(order.ID)
-	orderTemp.Date = order.Date
-	orderTemp.Phone = order.Phone
-	orderTemp.Status = util.ConvertIntToString(order.Status)
-	orderTemp.SumPrice = order.SumPrice
-	orderTemp.StoreID = util.ConvertIntToString(order.StoreID)
-	orderTemp.ShipperID = util.ConvertIntToString(order.ShipperID)
-	orderTemp.AddressCustomer = order.AddressCustomer
-	orderTemp.CustomerID = util.ConvertIntToString(order.CustomerID)
-	return orderTemp
-}
 
 //Order ...
 type Order struct {
-	ID              int       `json:"id"`
-	CustomerID      int       `json:"customer_id, omitempty" gorm:"column:customerId"`
-	ShipperID       int       `json:"shipper_id, omitempty" gorm:"column:shipperId"`
-	Date            time.Time `json:"date, omitempty" gorm:"datetime"`
-	Status          int       `json:"status, omitempty" gorm:"tinyint(1)"`
-	SumPrice        string    `json:"sum_price, omitempty" gorm:"text"`
-	AddressCustomer string    `json:"address_customer, omitempty" gorm:"text"`
-	Phone           string    `json:"phone, omitempty" gorm:"text"`
-	StoreID         int       `json:"store_id, omitempty" gorm:"column:storeId"`
+	ID              int    `json:"id"`
+	CustomerID      int    `json:"customer_id, omitempty" gorm:"column:customerId"`
+	ShipperID       int    `json:"shipper_id, omitempty" gorm:"column:shipperId"`
+	Date            string `json:"date, omitempty" gorm:"datetime"`
+	Status          int    `json:"status, omitempty" gorm:"tinyint(1)"`
+	SumPrice        string `json:"sum_price, omitempty" gorm:"text"`
+	AddressCustomer string `json:"address_customer, omitempty" gorm:"text"`
+	Phone           string `json:"phone, omitempty" gorm:"text"`
+	StoreID         int    `json:"store_id, omitempty" gorm:"column:storeId"`
+}
+
+//GetAllFreeOrder ...
+func GetAllFreeOrder() ([]Order, error) {
+	var orders []Order
+	db := database.GetDB()
+	res := db.Where("status = ?", 0).Find(&orders)
+	if res.Error != nil {
+		return orders, res.Error
+	}
+	return orders, nil
 }
 
 //GetOrderInfoByID ...
@@ -108,7 +91,7 @@ func (order *Order) create() error {
 }
 
 //CreateOrder ....
-func CreateOrder(customerID int, sumPrice string, storeID int, status int, shipperID int, phone string, addressCustomer string, date time.Time) (Order, error) {
+func CreateOrder(customerID int, sumPrice string, storeID int, status int, shipperID int, phone string, addressCustomer string, date string) (Order, error) {
 	var order Order
 	order.CustomerID = customerID
 	order.SumPrice = sumPrice

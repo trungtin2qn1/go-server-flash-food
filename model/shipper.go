@@ -12,7 +12,7 @@ type ShipperTemp struct {
 	Status   string `json:"status, omitempty" gorm:"tinyint(1)"`
 	Avatar   string `json:"avatar, omitempty" gorm:"text"`
 	UserName string `json:"username, omitempty" gorm:"column:username"`
-	Password string `json:"password, omitempty" gorm:"text"`
+	Password string `json:"-" gorm:"-"`
 	Phone    string `json:"phone, omitempty" gorm:"text"`
 }
 

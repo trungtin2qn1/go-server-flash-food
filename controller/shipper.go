@@ -69,13 +69,13 @@ func CreateShipper(c *gin.Context) {
 
 //UpdateShipper ...
 func UpdateShipper(c *gin.Context) {
-	shipperID := c.Param("shipper_id")
-	if shipperID == "" {
-		c.JSON(403, gin.H{
-			"message": "This customer is not available",
-		})
-		return
-	}
+	// shipperID := c.Param("shipper_id")
+	// if shipperID == "" {
+	// 	c.JSON(403, gin.H{
+	// 		"message": "This customer is not available",
+	// 	})
+	// 	return
+	// }
 	var newShipper model.Shipper
 	err := c.ShouldBind(&newShipper)
 	if err != nil {

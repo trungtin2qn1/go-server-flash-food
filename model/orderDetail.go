@@ -2,44 +2,18 @@ package model
 
 import (
 	"flash-food/database"
-	"flash-food/util"
-	"time"
 )
-
-//OrderDetailTemp ...
-type OrderDetailTemp struct {
-	ID         string    `json:"id"`
-	ProductID  string    `json:"product_id, omitempty" gorm:"column:productId"`
-	OrderID    string    `json:"order_id, omitempty" gorm:"column:orderId"`
-	CustomerID string    `json:"customer_id, omitempty" gorm:"customerId"`
-	Price      string    `json:"price, omitempty" gorm:"text"`
-	Status     string    `json:"status, omitempty" gorm:"tinyint(1)"`
-	Amount     string    `json:"amount, omitempty" gorm:"column:amount"`
-	Date       time.Time `json:"date, omitempty" gorm:"column:date"`
-}
-
-func (orderDetail *OrderDetail) convertJSONToOrder() OrderDetailTemp {
-	var orderDetailTemp OrderDetailTemp
-	orderDetailTemp.ID = util.ConvertIntToString(orderDetail.ID)
-	orderDetailTemp.Date = orderDetail.Date
-	orderDetailTemp.Status = util.ConvertIntToString(orderDetail.Status)
-	orderDetailTemp.Price = orderDetail.Price
-	orderDetailTemp.OrderID = util.ConvertIntToString(orderDetail.OrderID)
-	orderDetailTemp.ProductID = util.ConvertIntToString(orderDetail.ProductID)
-	orderDetailTemp.CustomerID = util.ConvertIntToString(orderDetail.CustomerID)
-	return orderDetailTemp
-}
 
 //OrderDetail ...
 type OrderDetail struct {
-	ID         int       `json:"id"`
-	ProductID  int       `json:"product_id, omitempty" gorm:"column:productId"`
-	OrderID    int       `json:"order_id, omitempty" gorm:"column:orderId"`
-	CustomerID int       `json:"customer_id, omitempty" gorm:"column:customerId"`
-	Price      string    `json:"price, omitempty" gorm:"text"`
-	Status     int       `json:"status, omitempty" gorm:"tinyint(1)"`
-	Amount     int       `json:"amount, omitempty" gorm:"column:amount"`
-	Date       time.Time `json:"date, omitempty" gorm:"column:date"`
+	ID         int    `json:"id"`
+	ProductID  int    `json:"product_id, omitempty" gorm:"column:productId"`
+	OrderID    int    `json:"order_id, omitempty" gorm:"column:orderId"`
+	CustomerID int    `json:"customer_id, omitempty" gorm:"column:customerId"`
+	Price      string `json:"price, omitempty" gorm:"text"`
+	Status     int    `json:"status, omitempty" gorm:"tinyint(1)"`
+	Amount     int    `json:"amount, omitempty" gorm:"column:amount"`
+	Date       string `json:"date, omitempty" gorm:"datetime"`
 }
 
 //GetOrderDetailsByOrderID ...
@@ -70,7 +44,6 @@ func (orderDetail *OrderDetail) UpdateOrderDetail(temp OrderDetail) error {
 	orderDetail.Status = temp.Status
 	orderDetail.Price = temp.Price
 	orderDetail.OrderID = temp.OrderID
-	//orderDetail.ID = temp.ID
 	orderDetail.Date = temp.Date
 	orderDetail.CustomerID = temp.CustomerID
 	orderDetail.Amount = temp.Amount
@@ -115,7 +88,7 @@ func (orderDetail *OrderDetail) create() error {
 }
 
 //CreateOrderDetail ....
-func CreateOrderDetail(customerID int, price string, orderID int, status int, productID int, amount int, date time.Time) (OrderDetail, error) {
+func CreateOrderDetail(customerID int, price string, orderID int, status int, productID int, amount int, date string) (OrderDetail, error) {
 	var orderDetail OrderDetail
 	orderDetail.CustomerID = customerID
 	orderDetail.OrderID = orderID

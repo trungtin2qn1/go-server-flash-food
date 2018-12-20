@@ -8,6 +8,47 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//GetAllFreeOrder ...
+func GetAllFreeOrder(c *gin.Context) {
+	orders, err := model.GetAllFreeOrder()
+	if err != nil && len(orders) != 0 {
+		c.JSON(503, gin.H{
+			"message": "Can't get orders from database",
+		})
+		return
+	}
+	type FreeOrder struct {
+		From         string `json:"from, omitempty"`
+		To           string `json:"to, omitempty"`
+		CustomerName string `json:"cutomer_name"`
+		StoreName    string `json:"store_name"`
+	}
+	var freeOrders []FreeOrder
+	for i := 0; i < len(orders); i++ {
+		var freeOrder FreeOrder
+		store, err := model.GetStoreInfoByID(orders[i].StoreID)
+		if err != nil && store.ID != 0 {
+			c.JSON(503, gin.H{
+				"message": "Can't get order from database",
+			})
+			return
+		}
+		freeOrder.From = store.Street + store.District + store.City
+		freeOrder.StoreName = store.Name
+		customer, err := model.GetCustomerInfoByID(orders[i].CustomerID)
+		if err != nil && customer.ID != 0 {
+			c.JSON(503, gin.H{
+				"message": "Can't get order from database",
+			})
+			return
+		}
+		freeOrder.To = orders[i].AddressCustomer
+		freeOrder.CustomerName = customer.Name
+		freeOrders = append(freeOrders, freeOrder)
+	}
+	c.JSON(200, freeOrders)
+}
+
 //GetOrderInfoByID ...
 func GetOrderInfoByID(c *gin.Context) {
 	//token := c.Request.Header.Get("token")
@@ -43,15 +84,16 @@ func GetOrderInfoByID(c *gin.Context) {
 
 //CreateOrder ...
 func CreateOrder(c *gin.Context) {
-	customerID := c.Param("customer_id")
-	if customerID == "" {
-		c.JSON(403, gin.H{
-			"message": "This customer is not available",
-		})
-		return
-	}
+	// customerID := c.Query("customer_id")
+	// if customerID == "" {
+	// 	c.JSON(403, gin.H{
+	// 		"message": "This customer is not available",
+	// 	})
+	// 	return
+	// }
 	var order model.Order
 	err := c.ShouldBind(&order)
+	fmt.Println(order)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(406, gin.H{
@@ -71,13 +113,13 @@ func CreateOrder(c *gin.Context) {
 
 //UpdateOrder ...
 func UpdateOrder(c *gin.Context) {
-	customerID := c.Param("customer_id")
-	if customerID == "" {
-		c.JSON(403, gin.H{
-			"message": "This customer is not available",
-		})
-		return
-	}
+	// customerID := c.Param("customer_id")
+	// if customerID == "" {
+	// 	c.JSON(403, gin.H{
+	// 		"message": "This customer is not available",
+	// 	})
+	// 	return
+	// }
 	var newOrder model.Order
 	err := c.ShouldBind(&newOrder)
 	if err != nil {
@@ -111,13 +153,13 @@ func UpdateOrder(c *gin.Context) {
 
 //DeleteOrder ...
 func DeleteOrder(c *gin.Context) {
-	customerID := c.Param("customer_id")
-	if customerID == "" {
-		c.JSON(403, gin.H{
-			"message": "Data or data type is invalid",
-		})
-		return
-	}
+	// customerID := c.Param("customer_id")
+	// if customerID == "" {
+	// 	c.JSON(403, gin.H{
+	// 		"message": "Data or data type is invalid",
+	// 	})
+	// 	return
+	// }
 	//order_id
 	var helpers model.Helpers
 	err := c.ShouldBind(&helpers)
@@ -128,6 +170,7 @@ func DeleteOrder(c *gin.Context) {
 		return
 	}
 	orderID := helpers.OrderID
+	fmt.Println(orderID)
 	orderInfo, err := model.GetOrderInfoByID(orderID)
 	if err != nil && orderInfo.ID != 0 {
 		c.JSON(503, gin.H{
@@ -135,6 +178,7 @@ func DeleteOrder(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Println(orderInfo)
 	if orderInfo.ID == 0 {
 		c.JSON(403, gin.H{
 			"message": "This order is not in database",

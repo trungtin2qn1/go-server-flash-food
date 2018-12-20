@@ -43,13 +43,13 @@ func GetOrderDetailByID(c *gin.Context) {
 
 //CreateOrderDetail ...
 func CreateOrderDetail(c *gin.Context) {
-	customerID := c.Param("customer_id")
-	if customerID == "" {
-		c.JSON(403, gin.H{
-			"message": "This customer is not available",
-		})
-		return
-	}
+	// customerID := c.Param("customer_id")
+	// if customerID == "" {
+	// 	c.JSON(403, gin.H{
+	// 		"message": "This customer is not available",
+	// 	})
+	// 	return
+	// }
 	var orderDetail model.OrderDetail
 	err := c.ShouldBind(&orderDetail)
 	if err != nil {
@@ -71,13 +71,13 @@ func CreateOrderDetail(c *gin.Context) {
 
 //UpdateOrderDetail ...
 func UpdateOrderDetail(c *gin.Context) {
-	customerID := c.Param("customer_id")
-	if customerID == "" {
-		c.JSON(403, gin.H{
-			"message": "This customer is not available",
-		})
-		return
-	}
+	// customerID := c.Param("customer_id")
+	// if customerID == "" {
+	// 	c.JSON(403, gin.H{
+	// 		"message": "This customer is not available",
+	// 	})
+	// 	return
+	// }
 	var newOrderDetail model.OrderDetail
 	err := c.ShouldBind(&newOrderDetail)
 	if err != nil {
@@ -111,13 +111,13 @@ func UpdateOrderDetail(c *gin.Context) {
 
 //DeleteOrderDetail ...
 func DeleteOrderDetail(c *gin.Context) {
-	customerID := c.Param("customer_id")
-	if customerID == "" {
-		c.JSON(403, gin.H{
-			"message": "Data or data type is invalid",
-		})
-		return
-	}
+	// customerID := c.Param("customer_id")
+	// if customerID == "" {
+	// 	c.JSON(403, gin.H{
+	// 		"message": "Data or data type is invalid",
+	// 	})
+	// 	return
+	// }
 	//order_id
 	var helpers model.Helpers
 	err := c.ShouldBind(&helpers)
@@ -128,7 +128,8 @@ func DeleteOrderDetail(c *gin.Context) {
 		return
 	}
 	orderDetailID := helpers.OrderDetailID
-	orderDetail, err := model.GetOrderInfoByID(orderDetailID)
+	fmt.Println(orderDetailID)
+	orderDetail, err := model.GetOrderDetailByID(orderDetailID)
 	if err != nil && orderDetail.ID != 0 {
 		c.JSON(503, gin.H{
 			"message": "Can't get order detail from database",
@@ -141,7 +142,8 @@ func DeleteOrderDetail(c *gin.Context) {
 		})
 		return
 	}
-	err = orderDetail.DeleteOrder()
+	fmt.Println(orderDetail)
+	err = orderDetail.DeleteOrderDetail()
 	if err != nil {
 		c.JSON(503, gin.H{
 			"message": "Can't delete this order detail",
