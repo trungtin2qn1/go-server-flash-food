@@ -3,6 +3,7 @@ package controller
 import (
 	"flash-food/model"
 	"flash-food/util"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,7 +11,7 @@ import (
 //GetShipperByID ...
 func GetShipperByID(c *gin.Context) {
 	//token := c.Request.Header.Get("token")
-	temp := c.Query("shipper_id")
+	temp := c.Request.Header.Get("shipper_id")
 	if temp == "" {
 		c.JSON(403, gin.H{
 			"message": "Data or data type is invalid",
@@ -42,13 +43,6 @@ func GetShipperByID(c *gin.Context) {
 
 //CreateShipper ...
 func CreateShipper(c *gin.Context) {
-	customerID := c.Param("customer_id")
-	if customerID == "" {
-		c.JSON(403, gin.H{
-			"message": "This customer is not available",
-		})
-		return
-	}
 	var shipper model.Shipper
 	err := c.ShouldBind(&shipper)
 	if err != nil {
@@ -84,6 +78,7 @@ func UpdateShipper(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Println(newShipper)
 	shipper, err := model.GetShipperInfoByID(newShipper.ID)
 	if err != nil {
 		c.JSON(503, gin.H{
@@ -104,18 +99,12 @@ func UpdateShipper(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Println(newShipper)
 	c.JSON(200, newShipper)
 }
 
 //DeleteShipper ...
 func DeleteShipper(c *gin.Context) {
-	customerID := c.Param("customer_id")
-	if customerID == "" {
-		c.JSON(403, gin.H{
-			"message": "Data or data type is invalid",
-		})
-		return
-	}
 	//order_id
 	var helpers model.Helpers
 	err := c.ShouldBind(&helpers)

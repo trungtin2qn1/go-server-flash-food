@@ -3,7 +3,8 @@ API doc:
     Get all free order:
         URL: /order/all
         Methods: Get
-        Output:[{
+        Output:{
+            "orders": [{
             "order_id": 1,
             "from": "770 Sư Vạn Hạnh10HCM",
             "to": "61/1, Xô Viết Nghệ Tĩnh, quận Bình Thạnh",
@@ -17,12 +18,13 @@ API doc:
             "cutomer_name": "Trần Quốc Vương",
             "store_name": "Toco Toco Bubble Tea"
         }]
+        }
 
     Get store info by store id
         Methods: Get
         URL: /store
         Header:
-            Query: "store_id" (id of store)
+            Header: "store_id" (id of store) (int)
         Output:{
             "id": 1,
             "avatar": "https://firebasestorage.googleapis.com/v0/b/flashfood-ce894.appspot.com/o/food%2Fbanhhue.jpg?alt=media&token=e6a9a1b9-314f-4a3b-822a-68fafb8eeedd",
@@ -52,7 +54,7 @@ API doc:
         Method: Get
         URL: /shipper
         Header:
-            Query: "shipper_id" (id of shipper)
+            "shipper_id" (id of shipper) (int)
         Output:{
             "id": 5,
             "name": "ABC",
@@ -114,7 +116,7 @@ API doc:
         Method: Get
         URL: /order_detail
         Header:
-            Query: "order_detail_id"
+            "order_detail_id" (int)
         Output:{
             "id": 2,
             "product_id": 2,
@@ -191,7 +193,7 @@ API doc:
         Method: Get
         URL: /order
         Header:
-            Query: "order_id"
+            Header: "order_id" (int)
         Output:{
             "id": 2,
             "customer_id": 3,
@@ -208,7 +210,7 @@ API doc:
         Method: Get
         URL: /customer
         Header:
-            Query: "customer_id"
+            Header: "customer_id" (int)
         Output:{
             "id": 3,
             "phone": "01629514200",

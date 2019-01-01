@@ -24,6 +24,9 @@ func GetAllFreeOrder(c *gin.Context) {
 		CustomerName string `json:"cutomer_name, omitempty"`
 		StoreName    string `json:"store_name, omitempty"`
 	}
+	type FreeOrders struct {
+		FreeOrders []FreeOrder `json:"free_orders, omitempty"`
+	}
 	var freeOrders []FreeOrder
 	for i := 0; i < len(orders); i++ {
 		var freeOrder FreeOrder
@@ -48,13 +51,16 @@ func GetAllFreeOrder(c *gin.Context) {
 		freeOrder.CustomerName = customer.Name
 		freeOrders = append(freeOrders, freeOrder)
 	}
-	c.JSON(200, freeOrders)
+	var res FreeOrders
+	res.FreeOrders = freeOrders
+	fmt.Println(res)
+	c.JSON(200, res)
 }
 
 //GetOrderInfoByID ...
 func GetOrderInfoByID(c *gin.Context) {
 	//token := c.Request.Header.Get("token")
-	temp := c.Query("order_id")
+	temp := c.Request.Header.Get("order_id")
 	if temp == "" {
 		c.JSON(403, gin.H{
 			"message": "Data or data type is invalid",

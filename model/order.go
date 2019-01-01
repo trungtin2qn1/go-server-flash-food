@@ -4,6 +4,11 @@ import (
 	"flash-food/database"
 )
 
+//OrderDisplay ...
+type OrderDisplay struct {
+	Orders []Order `json:"orders, omitempty"`
+}
+
 //Order ...
 type Order struct {
 	ID              int    `json:"id"`

@@ -10,7 +10,7 @@ import (
 
 //GetStoreInfoByID ...
 func GetStoreInfoByID(c *gin.Context) {
-	temp := c.Query("store_id")
+	temp := c.Request.Header.Get("store_id")
 	fmt.Println(temp)
 	if temp == "" {
 		c.JSON(403, gin.H{

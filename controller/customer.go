@@ -9,7 +9,7 @@ import (
 
 //GetCustomerInfoByID ...
 func GetCustomerInfoByID(c *gin.Context) {
-	temp := c.Query("customer_id")
+	temp := c.Request.Header.Get("customer_id")
 	if temp == "" {
 		c.JSON(403, gin.H{
 			"message": "Data or data type is invalid",

@@ -9,7 +9,7 @@ import (
 )
 
 func GetAllOrderDetail(c *gin.Context) {
-	temp := c.Query("order_id")
+	temp := c.Request.Header.Get("order_id")
 	fmt.Println(temp)
 	if temp == "" {
 		c.JSON(403, gin.H{
@@ -37,13 +37,18 @@ func GetAllOrderDetail(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(200, orderDetails)
+	var res model.OrderDetailDisplay
+	for i := 0; i < len(orderDetails); i++ {
+		res.OrderDetails = append(res.OrderDetails, orderDetails[i])
+	}
+	fmt.Println(res)
+	c.JSON(200, res)
 }
 
 //GetOrderDetailByID ...
 func GetOrderDetailByID(c *gin.Context) {
 	//token := c.Request.Header.Get("token")
-	temp := c.Query("order_detail_id")
+	temp := c.Request.Header.Get("order_detail_id")
 	if temp == "" {
 		c.JSON(403, gin.H{
 			"message": "Data or data type is invalid",
