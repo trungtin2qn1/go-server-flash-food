@@ -8,6 +8,111 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//PickOrder ...
+func PickOrder(c *gin.Context) {
+	var helpers model.Helpers
+	err := c.ShouldBind(&helpers)
+	if err != nil {
+		c.JSON(403, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+	orderID := helpers.OrderID
+	orderInfo, err := model.GetOrderInfoByID(orderID)
+	if err != nil {
+		c.JSON(503, gin.H{
+			"message": "Can't get order info from database",
+		})
+		return
+	}
+	if orderInfo.ID == 0 {
+		c.JSON(406, gin.H{
+			"message": "This order info is not available in database",
+		})
+		return
+	}
+	orderInfo.Status = 1
+	orderInfo.ShipperID = helpers.ShipperID
+	//orderInfo.UpdateOrderElement()
+	orderInfo.UpdateOrderInfo(orderInfo)
+	c.JSON(200, gin.H{
+		"message": "Success",
+	})
+}
+
+//ConfirmOrder ...
+func ConfirmOrder(c *gin.Context) {
+	var helpers model.Helpers
+	err := c.ShouldBind(&helpers)
+	if err != nil {
+		c.JSON(403, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+	orderID := helpers.OrderID
+	orderInfo, err := model.GetOrderInfoByID(orderID)
+	if err != nil {
+		c.JSON(503, gin.H{
+			"message": "Can't get order info from database",
+		})
+		return
+	}
+	if orderInfo.ID == 0 {
+		c.JSON(406, gin.H{
+			"message": "This order info is not available in database",
+		})
+		return
+	}
+
+	err = orderInfo.DeleteOrder()
+	if err != nil {
+		c.JSON(503, gin.H{
+			"message": "Can't delete order",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Success",
+	})
+}
+
+//RejectOrder ...
+func RejectOrder(c *gin.Context) {
+	var helpers model.Helpers
+	err := c.ShouldBind(&helpers)
+	if err != nil {
+		c.JSON(403, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+	orderID := helpers.OrderID
+	orderInfo, err := model.GetOrderInfoByID(orderID)
+	if err != nil {
+		c.JSON(503, gin.H{
+			"message": "Can't get order info from database",
+		})
+		return
+	}
+	if orderInfo.ID == 0 {
+		c.JSON(406, gin.H{
+			"message": "This order info is not available in database",
+		})
+		return
+	}
+
+	orderInfo.Status = 0
+	//orderInfo.ShipperID = 0
+
+	orderInfo.UpdateOrderInfo(orderInfo)
+	c.JSON(200, gin.H{
+		"message": "Success",
+	})
+}
+
 //GetAllFreeOrder ...
 func GetAllFreeOrder(c *gin.Context) {
 	orders, err := model.GetAllFreeOrder()
@@ -21,7 +126,7 @@ func GetAllFreeOrder(c *gin.Context) {
 		OrderID      int    `json:"order_id, omitempty"`
 		From         string `json:"from, omitempty"`
 		To           string `json:"to, omitempty"`
-		CustomerName string `json:"cutomer_name, omitempty"`
+		CustomerName string `json:"customer_name, omitempty"`
 		StoreName    string `json:"store_name, omitempty"`
 	}
 	type FreeOrders struct {
@@ -38,7 +143,7 @@ func GetAllFreeOrder(c *gin.Context) {
 			})
 			return
 		}
-		freeOrder.From = store.Street + store.District + store.City
+		freeOrder.From = store.Street + " " + store.District + " " + store.City
 		freeOrder.StoreName = store.Name
 		customer, err := model.GetCustomerInfoByID(orders[i].CustomerID)
 		if err != nil && customer.ID != 0 {
@@ -109,7 +214,7 @@ func CreateOrder(c *gin.Context) {
 		})
 		return
 	}
-	orderInfo, err := model.CreateOrder(order.CustomerID, order.SumPrice, order.StoreID, order.Status, order.ShipperID, order.Phone, order.AddressCustomer, order.Date)
+	orderInfo, err := model.CreateOrder(order.CustomerID, order.SumPrice, order.StoreID, order.Status, order.ShipperID, order.Phone, order.AddressCustomer, order.Date, order.PromotionCode, order.Rate)
 	if err != nil {
 		c.JSON(503, gin.H{
 			"message": "Can't create this order",

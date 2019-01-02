@@ -12,6 +12,8 @@ type Customer struct {
 	Email    string `json:"email, omitempty" gorm:"unique"`
 	Password string `json:"-" gorm:"-"`
 	Token    string `json:"token, omitempty" gorm:"text"`
+	Type     int    `json:"type, omitempty" gorm:"column:type"`
+	Points   int    `json:"points, omitempty" gorm:"column:"points"`
 }
 
 //GetCustomerInfoByID ...

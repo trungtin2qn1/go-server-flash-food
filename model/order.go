@@ -20,6 +20,8 @@ type Order struct {
 	AddressCustomer string `json:"address_customer, omitempty" gorm:"text"`
 	Phone           string `json:"phone, omitempty" gorm:"text"`
 	StoreID         int    `json:"store_id, omitempty" gorm:"column:storeId"`
+	PromotionCode   string `json:"promotion_code, omitempty" gorm:"text"`
+	Rate            int    `json:"rate, omitempty" gorm:"column:rate"`
 }
 
 //GetAllFreeOrder ...
@@ -46,6 +48,8 @@ func GetOrderInfoByID(orderID int) (Order, error) {
 
 //UpdateOrderInfo ...
 func (order *Order) UpdateOrderInfo(temp Order) error {
+	order.PromotionCode = temp.PromotionCode
+	order.Rate = temp.Rate
 	order.AddressCustomer = temp.AddressCustomer
 	order.CustomerID = temp.CustomerID
 	order.Date = temp.Date
@@ -96,8 +100,10 @@ func (order *Order) create() error {
 }
 
 //CreateOrder ....
-func CreateOrder(customerID int, sumPrice string, storeID int, status int, shipperID int, phone string, addressCustomer string, date string) (Order, error) {
+func CreateOrder(customerID int, sumPrice string, storeID int, status int, shipperID int, phone string, addressCustomer string, date string, promotionCode string, rate int) (Order, error) {
 	var order Order
+	order.PromotionCode = promotionCode
+	order.Rate = rate
 	order.CustomerID = customerID
 	order.SumPrice = sumPrice
 	order.StoreID = storeID

@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//GetAllOrderDetail ...
 func GetAllOrderDetail(c *gin.Context) {
 	temp := c.Request.Header.Get("order_id")
 	fmt.Println(temp)
@@ -37,9 +38,32 @@ func GetAllOrderDetail(c *gin.Context) {
 		})
 		return
 	}
-	var res model.OrderDetailDisplay
+
+	type orderDetailDisplay struct {
+		Thumbnail string `json:"thumbnail"`
+		FoodName  string `json:"food_name"`
+		Price     string `json:"price"`
+		Amount    int    `json:"amount"`
+	}
+
+	type orderDetailsDisplay struct {
+		OrderDetails []orderDetailDisplay `json:"order_details"`
+	}
+
+	var res orderDetailsDisplay
 	for i := 0; i < len(orderDetails); i++ {
-		res.OrderDetails = append(res.OrderDetails, orderDetails[i])
+		var temp orderDetailDisplay
+		temp.Amount = orderDetails[i].Amount
+		temp.Price = orderDetails[i].Price
+		product, err := model.GetProductByID(orderDetails[i].ProductID)
+		if err != nil && product.ID != 0 {
+			c.JSON(503, gin.H{
+				"message": "Can't get product from database",
+			})
+		}
+		temp.FoodName = product.Name
+		temp.Thumbnail = product.Avatar
+		res.OrderDetails = append(res.OrderDetails, temp)
 	}
 	fmt.Println(res)
 	c.JSON(200, res)

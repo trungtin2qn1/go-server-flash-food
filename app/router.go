@@ -68,6 +68,9 @@ func InitRouter() {
 		wsTestHandler(c.Writer, c.Request)
 	})
 
+	router.DELETE("/confirm_order", controller.ConfirmOrder)
+	router.PUT("/reject_order", controller.RejectOrder)
+	router.PUT("/pick_order", controller.PickOrder)
 	router.GET("/order_detail/order_id", controller.GetAllOrderDetail)
 	router.GET("/order/all", controller.GetAllFreeOrder)
 	router.GET("/store", controller.GetStoreInfoByID)
