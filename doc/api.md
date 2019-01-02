@@ -1,6 +1,6 @@
 # API doc:
 
-# Get all free order:
+## Get all free order:
 	URL: /order/all
         Methods: Get
         Output:{
@@ -20,7 +20,7 @@
         }]
         }
 
-# Get store info by store id
+## Get store info by store id
         Methods: Get
         URL: /store
         Header:
@@ -38,7 +38,7 @@
             "user_name": ""
         }
 
-# Update shipper info
+## Update shipper info
         Method: Put
         URL: /shipper
         Body:{
@@ -50,7 +50,7 @@
             "phone": "123456"
         }
 
-# Get shipper's info
+## Get shipper's info
         Method: Get
         URL: /shipper
         Header:
@@ -64,7 +64,7 @@
             "phone": "123456"
         }
 
-# Create order detail
+## Create order detail
         Method: Post
         URL: /order_detail
         Body:{
@@ -78,7 +78,7 @@
             "date": "2018-10-21 11:05:22" (valid format)
         }
 
-# Delete order detail
+## Delete order detail
         Method: Delete
         URL: /order_detail
         Body:{
@@ -88,7 +88,7 @@
             "message"
         }
 
-# Update order detail
+## Update order detail
         Method: Put
         URL: /order_detail
         Body:{
@@ -112,7 +112,7 @@
             "date": "2018-10-31 23:49:57"
         }
 
-# Get order detail by id
+## Get order detail by id
         Method: Get
         URL: /order_detail
         Header:
@@ -128,7 +128,7 @@
             "date": "2018-10-31T23:49:57+07:00"
         }
 
-# Delete an order
+## Delete an order
         Method: Delete
         URL: /order
         Body:{
@@ -138,7 +138,7 @@
             "message"
         }
 
-# Update info of an order
+## Update info of an order
         Method: Put
         URL: /order
         Body:{
@@ -164,7 +164,7 @@
             "store_id": 3
         }
 
-# Create order info
+## Create order info
         Method: Post
         URL: /order
         Body:{
@@ -189,7 +189,7 @@
             "store_id": 3
         }
 
-# Get order info by id
+## Get order info by id
         Method: Get
         URL: /order
         Header:
