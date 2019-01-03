@@ -26,7 +26,7 @@ func GetShipperByID(c *gin.Context) {
 		return
 	}
 	shipper, err := model.GetShipperInfoByID(shipperID)
-	if err != nil {
+	if err != nil && shipper.ID != 0 {
 		c.JSON(503, gin.H{
 			"message": "Can't get shipper info from database",
 		})
@@ -80,7 +80,7 @@ func UpdateShipper(c *gin.Context) {
 	}
 	fmt.Println(newShipper)
 	shipper, err := model.GetShipperInfoByID(newShipper.ID)
-	if err != nil {
+	if err != nil && shipper.ID != 0 {
 		c.JSON(503, gin.H{
 			"message": "Can't get old shipper info",
 		})

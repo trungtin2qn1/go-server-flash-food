@@ -39,6 +39,17 @@ type Shipper struct {
 	Phone    string `json:"phone, omitempty" gorm:"text"`
 }
 
+//GetShipperInfoByUserName ...
+func GetShipperInfoByUserName(shipperUsername string) (Shipper, error) {
+	var shipper Shipper
+	db := database.GetDB()
+	res := db.Where("username = ?", shipperUsername).Find(&shipper)
+	if res.Error != nil {
+		return shipper, res.Error
+	}
+	return shipper, nil
+}
+
 //GetShipperInfoByID ...
 func GetShipperInfoByID(shipperID int) (Shipper, error) {
 	var shipper Shipper
@@ -138,4 +149,15 @@ func (shipper *Shipper) DeleteShipper() error {
 	// }
 
 	return shipper.delete()
+}
+
+//Update 1 field of shippers table
+func (shipper *Shipper) UpdateShipperStatus(x int) error {
+	db := database.GetDB()
+	res := db.Model(&shipper).Where("id = ?", shipper.ID).Update("status", x)
+	if res.Error != nil {
+		//log.Fatal(res.Error)
+		return res.Error
+	}
+	return nil
 }

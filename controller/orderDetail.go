@@ -87,7 +87,7 @@ func GetOrderDetailByID(c *gin.Context) {
 		return
 	}
 	orderDetail, err := model.GetOrderDetailByID(orderDetailID)
-	if err != nil {
+	if err != nil && orderDetail.ID != 0 {
 		c.JSON(503, gin.H{
 			"message": "Can't get order detail from database",
 		})
@@ -149,7 +149,7 @@ func UpdateOrderDetail(c *gin.Context) {
 		return
 	}
 	orderDetail, err := model.GetOrderDetailByID(newOrderDetail.ID)
-	if err != nil {
+	if err != nil && orderDetail.ID != 0 {
 		c.JSON(503, gin.H{
 			"message": "Can't create this order detail",
 		})

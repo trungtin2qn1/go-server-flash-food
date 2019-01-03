@@ -12,7 +12,9 @@ import (
 func PickOrder(c *gin.Context) {
 	var helpers model.Helpers
 	err := c.ShouldBind(&helpers)
+	fmt.Println(helpers)
 	if err != nil {
+		fmt.Println("Data or data type is invalid")
 		c.JSON(403, gin.H{
 			"message": "Data or data type is invalid",
 		})
@@ -21,21 +23,67 @@ func PickOrder(c *gin.Context) {
 	orderID := helpers.OrderID
 	orderInfo, err := model.GetOrderInfoByID(orderID)
 	if err != nil {
+		fmt.Println("Can't get order info from database")
 		c.JSON(503, gin.H{
 			"message": "Can't get order info from database",
 		})
 		return
 	}
 	if orderInfo.ID == 0 {
+		fmt.Println("This order info is not available in database")
 		c.JSON(406, gin.H{
 			"message": "This order info is not available in database",
 		})
 		return
 	}
+
+	shipper, err := model.GetShipperInfoByID(helpers.ShipperID)
+	if err != nil && shipper.ID != 0 {
+		fmt.Println("Can't get shipper from database")
+		c.JSON(503, gin.H{
+			"message": "Can't get shipper from database",
+		})
+		return
+	}
+
+	if shipper.ID == 0 {
+		fmt.Println("This shipper is not in database")
+		c.JSON(406, gin.H{
+			"message": "This shipper is not in database",
+		})
+		return
+	}
+
+	if shipper.Status == 1 {
+		fmt.Println("This shipper is having an order")
+		c.JSON(406, gin.H{
+			"message": "This shipper is having an order",
+		})
+		return
+	}
+
 	orderInfo.Status = 1
 	orderInfo.ShipperID = helpers.ShipperID
 	//orderInfo.UpdateOrderElement()
-	orderInfo.UpdateOrderInfo(orderInfo)
+	err = orderInfo.UpdateOrderInfo(orderInfo)
+	if err != nil {
+		fmt.Println("Can't update order info")
+		c.JSON(406, gin.H{
+			"message": "Can't update order info",
+		})
+		return
+	}
+	err = shipper.UpdateShipperStatus(1)
+	if err != nil {
+		fmt.Println("Can't update shipper info")
+		c.JSON(503, gin.H{
+			"message": "Can't update shipper info",
+		})
+		return
+	}
+
+	fmt.Println(shipper)
+
 	c.JSON(200, gin.H{
 		"message": "Success",
 	})
@@ -45,34 +93,77 @@ func PickOrder(c *gin.Context) {
 func ConfirmOrder(c *gin.Context) {
 	var helpers model.Helpers
 	err := c.ShouldBind(&helpers)
+	fmt.Println(helpers)
 	if err != nil {
+		fmt.Println("Data or data type is invalid")
 		c.JSON(403, gin.H{
 			"message": "Data or data type is invalid",
 		})
 		return
 	}
 	orderID := helpers.OrderID
+	fmt.Println(orderID)
 	orderInfo, err := model.GetOrderInfoByID(orderID)
-	if err != nil {
+	if err != nil && orderInfo.ID != 0 {
+		fmt.Println("Can't get order info from database")
 		c.JSON(503, gin.H{
 			"message": "Can't get order info from database",
 		})
 		return
 	}
 	if orderInfo.ID == 0 {
+		fmt.Println("This order info is not available in database")
 		c.JSON(406, gin.H{
 			"message": "This order info is not available in database",
 		})
 		return
 	}
 
+	shipper, err := model.GetShipperInfoByID(helpers.ShipperID)
+	if err != nil && shipper.ID != 0 {
+		fmt.Println("Can't get shipper info from database")
+		c.JSON(503, gin.H{
+			"message": "Can't get shipper info from database",
+		})
+		return
+	}
+
+	if shipper.ID == 0 {
+		fmt.Println("This shipper is not in database")
+		c.JSON(406, gin.H{
+			"message": "This shipper is not in database",
+		})
+		return
+	}
+
+	if shipper.Status != 1 {
+		fmt.Println("This shipper is not having any orders")
+		c.JSON(406, gin.H{
+			"message": "This shipper is not having any orders",
+		})
+		return
+	}
+
+	fmt.Println(orderInfo)
+
 	err = orderInfo.DeleteOrder()
 	if err != nil {
+		fmt.Println("Can't delete order")
 		c.JSON(503, gin.H{
 			"message": "Can't delete order",
 		})
 		return
 	}
+
+	err = shipper.UpdateShipperStatus(0)
+	if err != nil {
+		fmt.Println("Can't update shipper info")
+		c.JSON(503, gin.H{
+			"message": "Can't update shipper info",
+		})
+		return
+	}
+	fmt.Println(shipper)
 
 	c.JSON(200, gin.H{
 		"message": "Success",
@@ -83,7 +174,9 @@ func ConfirmOrder(c *gin.Context) {
 func RejectOrder(c *gin.Context) {
 	var helpers model.Helpers
 	err := c.ShouldBind(&helpers)
+	fmt.Println(helpers)
 	if err != nil {
+		fmt.Println("Data or data type is invalid")
 		c.JSON(403, gin.H{
 			"message": "Data or data type is invalid",
 		})
@@ -92,22 +185,66 @@ func RejectOrder(c *gin.Context) {
 	orderID := helpers.OrderID
 	orderInfo, err := model.GetOrderInfoByID(orderID)
 	if err != nil {
+		fmt.Println("Can't get order info from database")
 		c.JSON(503, gin.H{
 			"message": "Can't get order info from database",
 		})
 		return
 	}
 	if orderInfo.ID == 0 {
+		fmt.Println("This order info is not available in database")
 		c.JSON(406, gin.H{
 			"message": "This order info is not available in database",
 		})
 		return
 	}
 
-	orderInfo.Status = 0
-	//orderInfo.ShipperID = 0
+	shipper, err := model.GetShipperInfoByID(helpers.ShipperID)
+	if err != nil && shipper.ID != 0 {
+		fmt.Println("Can't get shipper info from database")
+		c.JSON(503, gin.H{
+			"message": "Can't get shipper info from database",
+		})
+		return
+	}
 
-	orderInfo.UpdateOrderInfo(orderInfo)
+	fmt.Println(shipper)
+
+	if shipper.ID == 0 {
+		fmt.Println("This shipper is not in database")
+		c.JSON(406, gin.H{
+			"message": "This shipper is not in database",
+		})
+		return
+	}
+
+	if shipper.Status != 1 {
+		fmt.Println("This shipper is not having any orders")
+		c.JSON(406, gin.H{
+			"message": "This shipper is not having any orders",
+		})
+		return
+	}
+
+	err = orderInfo.UpdateOrderStatus(0)
+	if err != nil {
+		fmt.Println("Can't update order info")
+		c.JSON(503, gin.H{
+			"message": "Can't update order info",
+		})
+		return
+	}
+	fmt.Println(orderInfo)
+
+	err = shipper.UpdateShipperStatus(0)
+	if err != nil {
+		fmt.Println("Can't update shipper info")
+		c.JSON(503, gin.H{
+			"message": "Can't update shipper info",
+		})
+		return
+	}
+
 	c.JSON(200, gin.H{
 		"message": "Success",
 	})
@@ -167,6 +304,7 @@ func GetOrderInfoByID(c *gin.Context) {
 	//token := c.Request.Header.Get("token")
 	temp := c.Request.Header.Get("order_id")
 	if temp == "" {
+		fmt.Println("Data or data type is invalid")
 		c.JSON(403, gin.H{
 			"message": "Data or data type is invalid",
 		})
@@ -174,19 +312,22 @@ func GetOrderInfoByID(c *gin.Context) {
 	}
 	orderID, e := util.ConvertStringToInt(temp)
 	if e != nil {
+		fmt.Println("Server is busy")
 		c.JSON(503, gin.H{
 			"message": "Server is busy",
 		})
 		return
 	}
 	orderInfo, err := model.GetOrderInfoByID(orderID)
-	if err != nil {
+	if err != nil && orderInfo.ID != 0 {
+		fmt.Println("Can't get order info from database")
 		c.JSON(503, gin.H{
 			"message": "Can't get order info from database",
 		})
 		return
 	}
 	if orderInfo.ID == 0 {
+		fmt.Println("This order info is not available in database")
 		c.JSON(406, gin.H{
 			"message": "This order info is not available in database",
 		})
@@ -242,7 +383,7 @@ func UpdateOrder(c *gin.Context) {
 		return
 	}
 	orderInfo, err := model.GetOrderInfoByID(newOrder.ID)
-	if err != nil {
+	if err != nil && orderInfo.ID != 0 {
 		c.JSON(503, gin.H{
 			"message": "Can't create this order",
 		})

@@ -2,6 +2,7 @@ package model
 
 import (
 	"flash-food/database"
+	"fmt"
 )
 
 //OrderDisplay ...
@@ -58,12 +59,25 @@ func (order *Order) UpdateOrderInfo(temp Order) error {
 	order.Status = temp.Status
 	order.StoreID = temp.StoreID
 	order.SumPrice = temp.SumPrice
+	//fmt.Println(order)
+	//fmt.Println(temp)
 	return order.updateAllField(temp)
 }
 
 //UpdateOrderElement 1 element
 func (order *Order) UpdateOrderElement(field string, value string) error {
 	return order.updateField(field, value)
+}
+
+//Update 1 field of orders table
+func (order *Order) UpdateOrderStatus(x int) error {
+	db := database.GetDB()
+	res := db.Model(&order).Where("id = ?", order.ID).Update("status", x)
+	if res.Error != nil {
+		//log.Fatal(res.Error)
+		return res.Error
+	}
+	return nil
 }
 
 //Update 1 field of orders table
@@ -79,6 +93,7 @@ func (order *Order) updateField(field string, value string) error {
 
 //Update all field of orders table
 func (order *Order) updateAllField(updateOrder Order) error {
+	fmt.Println(updateOrder)
 	db := database.GetDB()
 	res := db.Model(&order).Where("id = ?", order.ID).Updates(updateOrder)
 	if res.Error != nil {
@@ -137,6 +152,7 @@ func (order *Order) DeleteOrder() error {
 	if err != nil && orderDetails[0].ID == 0 {
 		return err
 	}
+	fmt.Println(orderDetails)
 	for i := 0; i < len(orderDetails); i++ {
 		orderDetails[i].DeleteOrderDetail()
 	}
