@@ -63,6 +63,14 @@ func PickOrder(c *gin.Context) {
 		return
 	}
 
+	if orderInfo.Status == 1 {
+		fmt.Println("This order has been ordered")
+		c.JSON(406, gin.H{
+			"message": "This order has been ordered",
+		})
+		return
+	}
+
 	orderInfo.Status = 1
 	orderInfo.ShipperID = helpers.ShipperID
 	//orderInfo.UpdateOrderElement()
@@ -116,6 +124,14 @@ func ConfirmOrder(c *gin.Context) {
 		fmt.Println("This order info is not available in database")
 		c.JSON(406, gin.H{
 			"message": "This order info is not available in database",
+		})
+		return
+	}
+
+	if orderInfo.Status == 0 {
+		fmt.Println("This order has not been ordered")
+		c.JSON(406, gin.H{
+			"message": "This order has not been ordered",
 		})
 		return
 	}
@@ -196,6 +212,14 @@ func RejectOrder(c *gin.Context) {
 		fmt.Println("This order info is not available in database")
 		c.JSON(406, gin.H{
 			"message": "This order info is not available in database",
+		})
+		return
+	}
+
+	if orderInfo.Status == 0 {
+		fmt.Println("This order has not been ordered")
+		c.JSON(406, gin.H{
+			"message": "This order has not been ordered",
 		})
 		return
 	}

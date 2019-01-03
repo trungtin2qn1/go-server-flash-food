@@ -11,6 +11,7 @@ import (
 func SignIn(c *gin.Context) {
 	var test model.Shipper
 	err := c.ShouldBind(&test)
+	fmt.Println(test)
 	if err != nil {
 		fmt.Println("Data or data type is invalid")
 		c.JSON(403, gin.H{
