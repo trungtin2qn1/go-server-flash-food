@@ -11,6 +11,7 @@ import (
 //PickOrder ...
 func PickOrder(c *gin.Context) {
 	var helpers model.Helpers
+	fmt.Println(helpers)
 	err := c.ShouldBind(&helpers)
 	fmt.Println(helpers)
 	if err != nil {
