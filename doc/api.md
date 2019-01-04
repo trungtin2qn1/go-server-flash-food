@@ -277,3 +277,37 @@
     Output:{
         "message": string
     }
+
+# Sign in
+    Method: Post
+    URL: /sign_in
+    Input: 
+        Body:{
+            "username": ,
+            "password": 
+        }
+    Output:{
+        "id": int,
+        "name": string,
+        "status": int,
+        "avatar": string,
+        "username": string,
+        "phone": string
+    }
+
+# Sign up
+    Method: Post
+    URL: /sign_up
+    Input:
+        Body:{
+            "username": ,
+            "password":
+        }
+    Output:{
+        "id": int,
+        "name": string,
+        "status": int,
+        "avatar": string,
+        "username": string,
+        "phone": string
+    }
