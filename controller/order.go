@@ -163,14 +163,15 @@ func ConfirmOrder(c *gin.Context) {
 
 	fmt.Println(orderInfo)
 
-	err = orderInfo.DeleteOrder()
+	err = orderInfo.UpdateOrderStatus(2)
 	if err != nil {
-		fmt.Println("Can't delete order")
+		fmt.Println("Can't update order info")
 		c.JSON(503, gin.H{
-			"message": "Can't delete order",
+			"message": "Can't update order info",
 		})
 		return
 	}
+	fmt.Println(orderInfo)
 
 	err = shipper.UpdateShipperStatus(0)
 	if err != nil {

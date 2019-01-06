@@ -72,7 +72,9 @@ func UpdateShipper(c *gin.Context) {
 	// }
 	var newShipper model.Shipper
 	err := c.ShouldBind(&newShipper)
+	fmt.Println(newShipper)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(406, gin.H{
 			"message": "Data or datatype is invalid",
 		})
